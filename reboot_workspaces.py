@@ -9,4 +9,10 @@ NextToken = response['NextToken']
 for ws in workspace_list:
     workspaceid_list.append(ws['WorkspaceId'])
 
-response = client.reboot_workspaces(RebootWorkspaceRequests=[{'WorkspaceId': workspaceid},])
+while NextToken:
+    response = client.describe_workspaces(NextToken=NextToken)
+    workspace_list = response['Workspaces']
+    for ws in workspace_list:
+        workspaceid_list.append(ws['WorkspaceId'])
+        client.reboot_workspaces(RebootWorkspaceRequests=[{'WorkspaceId': workspaceid},])
+    NextToken = response['NextToken']
